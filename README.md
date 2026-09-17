@@ -16,6 +16,19 @@ inglés → español, entrenado sobre el corpus Tatoeba (Anki).
   - `resultados_test.csv` (traducciones y BLEU por ejemplo del conjunto de test)
 - **`mt_en_es_inferencia.ipynb`** — notebook liviano que carga el modelo ya entrenado (los 4
   archivos anteriores) y traduce texto nuevo, sin reentrenar.
+- **`mt_en_es_transformer_opus100.ipynb`** — misma arquitectura y mismos hiperparámetros que el
+  notebook principal, pero entrenada sobre [OPUS-100](https://huggingface.co/datasets/Helsinki-NLP/opus-100)
+  (en-es), un dataset mucho más grande, para comparar el efecto de la cantidad de datos. Genera los
+  mismos artefactos con sufijo `_opus100` (`transformer_en_es_opus100.pth`, `vocab_en_opus100.json`,
+  `vocab_es_opus100.json`, `model_config_opus100.json`, `history_opus100.json`,
+  `resultados_test_opus100.csv`).
+- **`comparacion.ipynb`** — carga los resultados de ambas corridas (Tatoeba vs. OPUS-100) y arma
+  una tabla comparativa (tamaño de dataset, vocabularios, tiempo de entrenamiento, BLEU), un
+  gráfico de las dos curvas de validación superpuestas, y opcionalmente traduce las mismas
+  oraciones con ambos modelos para comparar la calidad directamente.
+- **`history_tatoeba.json`** — historial de pérdida por época de la corrida ya hecha con Tatoeba
+  (BLEU 0.2759 en test), guardado para que `comparacion.ipynb` no dependa de re-ejecutar ese
+  notebook.
 
 ## Cómo correrlo en Google Colab
 
@@ -27,6 +40,16 @@ inglés → español, entrenado sobre el corpus Tatoeba (Anki).
    `model_config.json`) desde el panel de archivos de Colab (o guárdalos en tu Drive).
 5. Sube `mt_en_es_inferencia.ipynb` como notebook aparte, sube esos 4 archivos en su panel de
    archivos, y ejecútalo para traducir oraciones nuevas.
+
+## Comparación Tatoeba vs. dataset grande (OPUS-100)
+
+1. Corre `mt_en_es_transformer_opus100.ipynb` igual que el principal (paso 1-3 de arriba). Por el
+   tamaño del dataset (hasta 500,000 pares por defecto) toma ~45-70 minutos en GPU T4 — baja
+   `MAX_TRAIN_PAIRS` o `N_EPOCHS` en el notebook si necesitas que sea más rápido.
+2. Descarga los archivos que genera (mismo panel de archivos de Colab, sufijo `_opus100`).
+3. Abre `comparacion.ipynb`, sube `history_tatoeba.json` (ya está en este repo) + los archivos del
+   paso 2, y ejecútalo para obtener la tabla comparativa, el gráfico de curvas de validación, y
+   (opcional) las traducciones lado a lado de ambos modelos.
 
 ## Sobre los entregables del curso
 
